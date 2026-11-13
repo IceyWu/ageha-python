@@ -1,0 +1,41 @@
+name: test-publish
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: test-publish
+  cancel-in-progress: false
+jobs:
+  build:
+    uses: ./.github/workflows/ci.yml
+    with:
+      version: ${{ format('0.1.0.dev{0}{1}', github.run_id, github.run_attempt) }}
+      artifact-name: test-dist
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: testpypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: test-dist
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@v1.14.3
+        with:
+          repository-url: https://test.pypi.org/legacy/
+  verify:
+    needs: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v10
+      - uses: actions/download-artifact@v8
+        with:
+          name: test-dist
+          path: dist
+      - run: python scripts/verify_registry.py testpypi dist

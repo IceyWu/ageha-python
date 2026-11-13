@@ -1,0 +1,70 @@
+name: quality
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        type: string
+        default: ""
+      version:
+        type: string
+        default: ""
+      artifact-name:
+        type: string
+        default: dist
+permissions:
+  contents: read
+jobs:
+  check:
+    name: Python ${{ matrix.python }} / ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {os: ubuntu-latest, python: "3.11"}
+          - {os: ubuntu-latest, python: "3.13"}
+          - {os: ubuntu-latest, python: "3.14"}
+          - {os: windows-latest, python: "3.13"}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python }}
+      - run: uv sync --locked
+      - name: Set test distribution version
+        if: inputs.version != ''
+        env:
+          TEST_VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          uv run --no-sync python scripts/set_version.py "$TEST_VERSION"
+          uv pip install --no-deps -e .
+      - run: uv run --no-sync ruff check src tests scripts
+      - run: uv run --no-sync pytest -q
+      - run: uv build --no-sources
+      - run: uv run --no-sync twine check dist/*
+      - name: Install wheel in an isolated environment
+        shell: bash
+        run: |
+          uv venv smoke-env
+          if [ "$RUNNER_OS" = Windows ]; then
+            PYTHON=smoke-env/Scripts/python.exe
+          else
+            PYTHON=smoke-env/bin/python
+          fi
+          uv pip install --python "$PYTHON" --no-deps dist/*.whl
+          "$PYTHON" -I -c "import ageha; from importlib.metadata import version; assert ageha.__version__ == version('ageha'); print(version('ageha'))"
+      - uses: actions/upload-artifact@v7
+        if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
+        with:
+          name: ${{ inputs.artifact-name || 'dist' }}
+          path: dist/*
+          if-no-files-found: error

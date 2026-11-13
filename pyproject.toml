@@ -1,6 +1,6 @@
 [project]
 name = "ageha"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Python toolkit with shared chat and multi-provider TTS interfaces."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -28,10 +28,6 @@ dev = ["pytest>=8", "ruff>=0.9", "build>=1.2", "twine>=6"]
 [build-system]
 requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
-
-[[tool.uv.index]]
-url = "https://pypi.org/simple"
-default = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ageha"]

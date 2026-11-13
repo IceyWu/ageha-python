@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/IceyWu/ageha-python/compare/v0.1.0...v0.1.1) (2026-11-13)
+
+
+### Bug Fixes
+
+* **chat:** validate provider responses and preserve tool-only replies ([7615339](https://github.com/IceyWu/ageha-python/commit/76153392925dacdfecf8dd71d62b8b19adcb851a))
+
 ## [0.1.0](https://github.com/IceyWu/ageha-python/compare/v0.0.1...v0.1.0) (2026-11-13)
 
 

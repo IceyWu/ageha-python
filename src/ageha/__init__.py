@@ -12,7 +12,7 @@ except PackageNotFoundError:
     try:
         __version__ = version("ageha")
     except PackageNotFoundError:
-        __version__ = "0.1.0"  # x-release-please-version
+        __version__ = "0.1.1"  # x-release-please-version
 
 _tts = import_module(f"{__name__}.clients.tts")
 _chat = import_module(f"{__name__}.clients.chat")

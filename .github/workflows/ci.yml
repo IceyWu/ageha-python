@@ -30,11 +30,11 @@ jobs:
           - {os: windows-latest, python: "3.13"}
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.1
         with:
           ref: ${{ inputs.ref || github.sha }}
           persist-credentials: false
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
           python-version: ${{ matrix.python }}
@@ -62,7 +62,7 @@ jobs:
           fi
           uv pip install --python "$PYTHON" --no-deps dist/*.whl
           "$PYTHON" -I -c "import ageha; from importlib.metadata import version; assert ageha.__version__ == version('ageha'); print(version('ageha'))"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@v7.0.2
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
         with:
           name: ${{ inputs.artifact-name || 'dist' }}

@@ -69,6 +69,43 @@ def _parse_arguments(raw: str) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
+def _choice_message(
+    data: object, *, allow_tool_calls: bool = False,
+) -> tuple[Mapping[str, Any], str | None]:
+    """Validate an OpenAI-compatible response without exposing provider payloads."""
+    if not isinstance(data, Mapping):
+        raise ChatError("Chat API returned an invalid response: expected a JSON object")
+
+    base_resp = data.get("base_resp")
+    if isinstance(base_resp, Mapping):
+        status_code = base_resp.get("status_code")
+        if status_code not in (None, 0, "0"):
+            status_msg = str(base_resp.get("status_msg") or "").strip()
+            suffix = f": {status_msg}" if status_msg else ""
+            raise ChatError(f"Chat provider rejected the request (status {status_code}){suffix}")
+
+    choices = data.get("choices")
+    if not isinstance(choices, list) or not choices or not isinstance(choices[0], Mapping):
+        raise ChatError("Chat API returned an invalid response: no completion choice")
+    message = choices[0].get("message")
+    if not isinstance(message, Mapping):
+        raise ChatError("Chat API returned an invalid response: no message in completion choice")
+    content = message.get("content")
+    tool_calls = message.get("tool_calls")
+    has_tool_call = isinstance(tool_calls, list) and any(
+        isinstance(item, Mapping) and item.get("id")
+        and isinstance(item.get("function"), Mapping) and item["function"].get("name")
+        for item in tool_calls
+    )
+    if not isinstance(content, str) and not (allow_tool_calls and content is None and has_tool_call):
+        finish_reason = choices[0].get("finish_reason")
+        reason = f" (finish_reason={finish_reason})" if finish_reason else ""
+        if message.get("reasoning_content") is not None:
+            reason += "; provider returned reasoning without user-visible content"
+        raise ChatError(f"Chat API returned no user-visible message content{reason}")
+    return message, choices[0].get("finish_reason")
+
+
 class Chat:
     """OpenAI-compatible chat client shared by Ageha applications.
 
@@ -124,10 +161,8 @@ class Chat:
             timeout=self.timeout,
         )
         response.raise_for_status()
-        try:
-            content = response.json()["choices"][0]["message"]["content"]
-        except (KeyError, IndexError, TypeError) as error:
-            raise ChatError("Chat API returned an invalid response") from error
+        message, _ = _choice_message(response.json())
+        content = message["content"]
         return _strip_thinking(str(content or ""))
 
     def complete_agent(
@@ -149,10 +184,7 @@ class Chat:
         response.raise_for_status()
         if on_delta is not None:
             return self._stream_reply(response, on_delta)
-        try:
-            message = response.json()["choices"][0]["message"]
-        except (KeyError, IndexError, TypeError) as error:
-            raise ChatError("Chat API returned an invalid response") from error
+        message, _ = _choice_message(response.json(), allow_tool_calls=True)
         calls = tuple(
             ToolCall(
                 id=str(item["id"]),

@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.0](https://github.com/IceyWu/ageha-python/compare/v0.0.1...v0.1.0) (2026-11-13)
+
+
+### Features
+
+* add shared chat and multi-provider TTS clients ([5c70d55](https://github.com/IceyWu/ageha-python/commit/5c70d556c8a3f250f09a05f7fe57fc4598d0305f))
+
+
+### Bug Fixes
+
+* align pre-major feature version bumps ([7d3d2d7](https://github.com/IceyWu/ageha-python/commit/7d3d2d7a8824217568ca746b065bb36c3af89a3f))
+* preserve UTF-8 encoding in lockfile ([ea46104](https://github.com/IceyWu/ageha-python/commit/ea461048bb770b40b97bc36e87c85507da448c9f))
+
 ## 0.0.1 (2026-11-13)
 
 

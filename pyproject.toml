@@ -1,6 +1,6 @@
 [project]
 name = "ageha"
-version = "0.0.1"
+version = "0.1.0"
 description = "A Python toolkit with shared chat and multi-provider TTS interfaces."
 readme = "README.md"
 requires-python = ">=3.11"

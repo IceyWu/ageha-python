@@ -1,36 +1,48 @@
-# Ageha
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/ageha-mark-light.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/brand/ageha-mark.svg">
+    <img src="assets/brand/ageha-mark.svg" alt="Ageha butterfly mark" width="128" height="128">
+  </picture>
+  <h1>Ageha</h1>
+  <p><strong>A Python toolkit.</strong></p>
+  <p>Created and maintained by Lev Wu.</p>
+  <p><a href="#development">Development</a> · <a href="#documentation">Documentation</a></p>
+  <p><a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a></p>
+  <p>
+    <a href="https://github.com/IceyWu/ageha-python/actions/workflows/ci.yml"><img src="https://github.com/IceyWu/ageha-python/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+    <a href="https://github.com/IceyWu/ageha-python/actions/workflows/preview.yml"><img src="https://github.com/IceyWu/ageha-python/actions/workflows/preview.yml/badge.svg?branch=main" alt="Preview Release"></a>
+    <img src="https://img.shields.io/badge/Python-3.11%2B-3776AB?style=flat-square&amp;logo=python&amp;logoColor=white" alt="Python 3.11+">
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-555555?style=flat-square" alt="MIT license"></a>
+  </p>
+</div>
 
-**A Python SDK for unified model integrations.**
-Created and maintained by **Lev Wu**.
+---
 
-Ageha is being developed as an independent foundation for connecting applications
-to multiple model providers. This initial infrastructure release establishes
-package distribution, quality checks and automated version management.
-Model-provider APIs will be introduced in subsequent releases.
+Ageha is a Python toolkit by **Lev Wu**, currently under development.
 
 ## Development
 
-    uv sync --group dev
-    uv run ruff check src tests scripts
-    uv run pytest -q
-    uv build
-    uv run twine check dist/*
+Requires **Python 3.11+** and [uv](https://docs.astral.sh/uv/).
 
-## Release workflow
+~~~bash
+git clone https://github.com/IceyWu/ageha-python.git
+cd ageha-python
+uv sync --locked
+~~~
 
-- **CI** checks Python 3.11, 3.13 and 3.14 on Linux, plus Python 3.13 on Windows.
-- **Preview Release** builds a unique development version, publishes to TestPyPI,
-  verifies distribution hashes and installs the published wheel in isolation.
-- **Release** maintains a version PR and changelog using Conventional Commits.
-  Merging that PR creates the version tag and GitHub release. Production PyPI
-  uploads require PYPI_ENABLED=true and a configured Trusted Publisher.
+~~~bash
+uv run ruff check src tests scripts
+uv run pytest -q
+uv build
+~~~
 
-See the [Release Guide](docs/publishing.md) for account setup, publishing and recovery.
+## Documentation
 
-## 中文
+- [Release guide](docs/publishing.md)
+- [Releases](https://github.com/IceyWu/ageha-python/releases)
+- [Issues](https://github.com/IceyWu/ageha-python/issues)
 
-Ageha 是 **Lev Wu** 维护的独立 Python SDK，计划提供统一的多模型接入能力。
-当前基础设施版本已建立代码校验、包构建、预发布和自动版本管理流程。
-模型供应商适配及聊天 API 将在后续版本加入。
-使用 feat:、fix: 等提交前缀后，Release 流水线自动维护版本 PR。
-Preview Release 用于验证实际分发与安装；正式发布通过 Release 流水线执行。
+## License
+
+[MIT](LICENSE) · **Lev Wu**

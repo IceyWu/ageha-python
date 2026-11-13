@@ -1,7 +1,7 @@
 [project]
 name = "ageha"
 version = "0.0.0"
-description = "Ageha: a Python SDK for unified model integrations"
+description = "A Python toolkit."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"

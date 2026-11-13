@@ -1,60 +1,56 @@
-# Release Guide / 发布指南
+# Release guide
 
-Author: **Lev Wu**. Package: ageha. Repository: IceyWu/ageha-python.
-The repository owner is the current GitHub login, not the author display name.
+Ageha uses GitHub Actions for quality checks, preview distribution, and versioned
+releases. Authentication uses PyPI Trusted Publishing through GitHub OIDC.
 
-## Accounts
+## Workflows
 
-PyPI and TestPyPI are separate accounts. Register on both, verify email and
-enable two-factor authentication. Passwords and recovery codes stay with the user.
+| Workflow | Trigger | Result |
+| :--- | :--- | :--- |
+| CI | Push to main, pull request, or manual run | Lint, tests, build, metadata checks, and isolated wheel installation |
+| Preview Release | Manual run on main | A unique development version published to TestPyPI and verified after upload |
+| Release | Push to main or manual run | A maintained version PR; after merge, a version tag and GitHub release |
 
-## TestPyPI Trusted Publisher
-
-After login open https://test.pypi.org/manage/account/publishing/ and add a
-pending publisher for GitHub:
-
-| Field | Value |
-|---|---|
-| PyPI project name | ageha |
-| Owner | IceyWu |
-| Repository name | ageha-python |
-| Workflow name | preview.yml |
-| Environment name | preview |
-
-Run Actions > Preview Release > Run workflow on main.
-CI generates a unique 0.1.0.devN version, tests Linux and Windows, builds wheel
-and source distributions, validates metadata and publishes using OIDC.
-Verification compares both artifacts against registry SHA-256 hashes and imports
-the downloaded wheel in an isolated environment.
-
-## Production
-
-When real model code is ready, configure a pending publisher at
-https://pypi.org/manage/account/publishing/ with workflow release.yml and
-environment pypi. All other fields match the TestPyPI configuration.
-Set repository variable PYPI_ENABLED=true only when ready for real releases.
-
-Release Please maintains a version PR using Conventional Commits. Merge it to
-create a tag and GitHub release, then publish within the same workflow.
-No long-lived PyPI API token is required. The workflow explicitly checks the
-release PR branch, since GITHUB_TOKEN-created PRs do not trigger PR workflows.
+Preview Release checks both distribution hashes against the registry, downloads
+the published wheel, and imports it in a fresh environment.
 
 ## Versioning
 
-- fix: a patch release.
-- feat: a feature release (0.x minor bumps enabled).
-- feat!: or BREAKING CHANGE: a breaking change.
-- docs: and chore: normally do not produce standalone releases.
+Release Please reads Conventional Commit messages and updates the version,
+changelog, and lockfile through a version PR.
 
-The manifest starts at 0.0.0. Review generated version changes before merging.
+| Commit | Release intent |
+| :--- | :--- |
+| fix: | Patch |
+| feat: | Feature; advances the minor version during 0.x |
+| feat!: or BREAKING CHANGE: | Breaking change |
+| docs: or chore: | Normally no standalone release |
+
+Review the version PR before merging. The Release workflow explicitly checks
+the generated branch because GITHUB_TOKEN-created PRs do not trigger normal
+pull-request workflows.
+
+## Publishing configuration
+
+| Destination | Workflow file | GitHub environment |
+| :--- | :--- | :--- |
+| TestPyPI | preview.yml | preview |
+| PyPI | release.yml | pypi |
+
+Trusted Publisher configuration must match the repository owner, repository
+name, workflow filename, and environment. See the
+[PyPI documentation](https://docs.pypi.org/trusted-publishers/) for account setup
+and publisher configuration.
+
+Production uploads require the repository variable PYPI_ENABLED=true and a
+configured PyPI Trusted Publisher. Production publishing is currently disabled.
 
 ## Recovery
 
-Before publishing, revert the source commit or close the version PR.
-After publishing, never replace a distribution. Yank a broken version and publish
-a corrected newer version. Set PYPI_ENABLED=false to disable production uploads.
-Every preview run uses a unique version.
+Before upload, revert the source commit or close the version PR. After upload,
+published files are immutable: yank a broken version and release a corrected
+version. Set PYPI_ENABLED=false to suspend production uploads.
 
-If uploading failed after creating a release, inspect the failure and re-run the
-failed workflow jobs while artifacts remain available. Do not create another
-release with the same version or modify previously uploaded artifacts.
+If an upload fails after creating a GitHub release, inspect the failed step
+before retrying. Re-run failed jobs while their artifacts remain available.
+Each Preview Release run generates a unique version.

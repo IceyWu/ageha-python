@@ -47,6 +47,8 @@ with tempfile.TemporaryDirectory(prefix="ageha-smoke-") as temporary:
     )
     subprocess.run([str(python), "-I", "-c",
                     ("import ageha; from importlib.metadata import version; "
-                     "assert ageha.__version__ == version('ageha'); print(version('ageha'))")],
+                     "assert ageha.__version__ == version('ageha'); "
+                     "assert ageha.greet('Lev Wu') == 'Hello, Lev Wu!'; "
+                     "print(version('ageha')); print(ageha.greet('Lev Wu'))")],
                    check=True)
 print(f"Verified registry hashes and installed ageha=={version} from {host}")

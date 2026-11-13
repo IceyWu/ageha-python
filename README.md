@@ -21,6 +21,18 @@
 
 Ageha is a Python toolkit by **Lev Wu**, currently under development.
 
+## Installation
+
+~~~bash
+pip install ageha
+~~~
+
+~~~python
+from ageha import greet
+
+print(greet("Lev Wu"))  # Hello, Lev Wu!
+~~~
+
 ## Development
 
 Requires **Python 3.11+** and [uv](https://docs.astral.sh/uv/).

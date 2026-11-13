@@ -61,7 +61,7 @@ jobs:
             PYTHON=smoke-env/bin/python
           fi
           uv pip install --python "$PYTHON" --no-deps dist/*.whl
-          "$PYTHON" -I -c "import ageha; from importlib.metadata import version; assert ageha.__version__ == version('ageha'); print(version('ageha'))"
+          "$PYTHON" -I -c "import ageha; from importlib.metadata import version; assert ageha.__version__ == version('ageha'); assert ageha.greet('Lev Wu') == 'Hello, Lev Wu!'; print(version('ageha')); print(ageha.greet('Lev Wu'))"
       - uses: actions/upload-artifact@v7.0.2
         if: matrix.os == 'ubuntu-latest' && matrix.python == '3.13'
         with:

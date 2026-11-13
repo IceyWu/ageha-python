@@ -21,6 +21,18 @@
 
 Ageha 是 **Lev Wu** 维护的 Python 工具包，目前正在开发中。
 
+## 安装使用
+
+~~~bash
+pip install ageha
+~~~
+
+~~~python
+from ageha import greet
+
+print(greet("Lev Wu"))  # Hello, Lev Wu!
+~~~
+
 ## 本地开发
 
 需要 **Python 3.11+** 和 [uv](https://docs.astral.sh/uv/)。

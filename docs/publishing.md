@@ -43,7 +43,7 @@ name, workflow filename, and environment. See the
 and publisher configuration.
 
 Production uploads require the repository variable PYPI_ENABLED=true and a
-configured PyPI Trusted Publisher. Production publishing is currently disabled.
+configured PyPI Trusted Publisher.
 
 ## Recovery
 

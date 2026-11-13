@@ -3,6 +3,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.request
 import zipfile
@@ -35,10 +36,17 @@ for attempt in range(8):
         if attempt == 7:
             raise
         time.sleep(10)
-subprocess.run(["uv", "venv", "smoke-env"], check=True)
-python = Path("smoke-env/bin/python").resolve()
-subprocess.run(["uv", "pip", "install", "--python", str(python), "--no-deps", str(wheel)], check=True)
-subprocess.run([str(python), "-I", "-c",
-                ("import ageha; from importlib.metadata import version; "
-                 "assert ageha.__version__ == version('ageha'); print(version('ageha'))")], check=True)
+with tempfile.TemporaryDirectory(prefix="ageha-smoke-") as temporary:
+    environment = Path(temporary) / "venv"
+    subprocess.run(["uv", "venv", str(environment)], check=True)
+    # Do not resolve this symlink: that would select the system interpreter on Linux.
+    executable = "Scripts/python.exe" if sys.platform == "win32" else "bin/python"
+    python = environment / executable
+    subprocess.run(
+        ["uv", "pip", "install", "--python", str(python), "--no-deps", str(wheel)], check=True
+    )
+    subprocess.run([str(python), "-I", "-c",
+                    ("import ageha; from importlib.metadata import version; "
+                     "assert ageha.__version__ == version('ageha'); print(version('ageha'))")],
+                   check=True)
 print(f"Verified registry hashes and installed ageha=={version} from {host}")

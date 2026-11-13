@@ -1,4 +1,4 @@
-# First release / 首次发布
+# Release Guide / 发布指南
 
 Author: **Lev Wu**. Package: ageha. Repository: IceyWu/ageha-python.
 The repository owner is the current GitHub login, not the author display name.
@@ -18,10 +18,10 @@ pending publisher for GitHub:
 | PyPI project name | ageha |
 | Owner | IceyWu |
 | Repository name | ageha-python |
-| Workflow name | testpypi.yml |
-| Environment name | testpypi |
+| Workflow name | preview.yml |
+| Environment name | preview |
 
-Run Actions > test-publish > Run workflow on main.
+Run Actions > Preview Release > Run workflow on main.
 CI generates a unique 0.1.0.devN version, tests Linux and Windows, builds wheel
 and source distributions, validates metadata and publishes using OIDC.
 Verification compares both artifacts against registry SHA-256 hashes and imports
@@ -53,7 +53,7 @@ The manifest starts at 0.0.0. Review generated version changes before merging.
 Before publishing, revert the source commit or close the version PR.
 After publishing, never replace a distribution. Yank a broken version and publish
 a corrected newer version. Set PYPI_ENABLED=false to disable production uploads.
-Every TestPyPI run uses a unique version.
+Every preview run uses a unique version.
 
 If uploading failed after creating a release, inspect the failure and re-run the
 failed workflow jobs while artifacts remain available. Do not create another

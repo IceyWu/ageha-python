@@ -1,4 +1,4 @@
-name: quality
+name: CI
 on:
   push:
     branches: [main]
@@ -39,13 +39,13 @@ jobs:
           enable-cache: true
           python-version: ${{ matrix.python }}
       - run: uv sync --locked
-      - name: Set test distribution version
+      - name: Set preview package version
         if: inputs.version != ''
         env:
-          TEST_VERSION: ${{ inputs.version }}
+          PACKAGE_VERSION: ${{ inputs.version }}
         shell: bash
         run: |
-          uv run --no-sync python scripts/set_version.py "$TEST_VERSION"
+          uv run --no-sync python scripts/set_version.py "$PACKAGE_VERSION"
           uv pip install --no-deps -e .
       - run: uv run --no-sync ruff check src tests scripts
       - run: uv run --no-sync pytest -q

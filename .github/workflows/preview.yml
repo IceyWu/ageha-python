@@ -1,27 +1,27 @@
-name: test-publish
+name: Preview Release
 on:
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: test-publish
+  group: preview-release
   cancel-in-progress: false
 jobs:
   build:
     uses: ./.github/workflows/ci.yml
     with:
       version: ${{ format('0.1.0.dev{0}{1}', github.run_id, github.run_attempt) }}
-      artifact-name: test-dist
+      artifact-name: preview-dist
   publish:
     needs: build
     runs-on: ubuntu-latest
-    environment: testpypi
+    environment: preview
     permissions:
       id-token: write
     steps:
       - uses: actions/download-artifact@v8.0.2
         with:
-          name: test-dist
+          name: preview-dist
           path: dist
       - uses: pypa/gh-action-pypi-publish@v1.14.3
         with:
@@ -36,6 +36,6 @@ jobs:
       - uses: astral-sh/setup-uv@v10.3.3
       - uses: actions/download-artifact@v8.0.2
         with:
-          name: test-dist
+          name: preview-dist
           path: dist
       - run: python scripts/verify_registry.py testpypi dist

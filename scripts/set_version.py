@@ -1,4 +1,4 @@
-"""Set an ephemeral CI test version without changing the release manifest."""
+"""Set an CI preview version without changing the release manifest."""
 import re
 import sys
 from pathlib import Path

@@ -14,7 +14,7 @@ def test_ci_version_updates_both_metadata_sources(tmp_path):
     module.write_text('__version__ = "0.0.0"\n')
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "0.1.0.dev1231"], cwd=tmp_path,
-        capture_output=True, text=True,
+        capture_output=True, text=True, check=False,
     )
     assert result.returncode == 0, result.stderr
     project = tomllib.loads((tmp_path / "pyproject.toml").read_text())
@@ -25,7 +25,7 @@ def test_ci_version_updates_both_metadata_sources(tmp_path):
 def test_invalid_ci_version_leaves_files_untouched(tmp_path):
     result = subprocess.run(
         [sys.executable, str(SCRIPT), "not-a-version"], cwd=tmp_path,
-        capture_output=True, text=True,
+        capture_output=True, text=True, check=False,
     )
     assert result.returncode != 0
     assert not list(tmp_path.iterdir())

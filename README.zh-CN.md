@@ -5,7 +5,7 @@
     <img src="assets/brand/ageha-mark.svg" alt="Ageha butterfly mark" width="128" height="128">
   </picture>
   <h1>Ageha</h1>
-  <p><strong>一个 Python 工具包。</strong></p>
+  <p><strong>一个可复用 AI 客户端的 Python 命名空间。</strong></p>
   <p>Lev Wu 创建并维护。</p>
   <p><a href="#项目介绍">项目介绍</a> · <a href="#本地开发">本地开发</a> · <a href="#开发方向">开发方向</a> · <a href="#项目文档">项目文档</a></p>
   <p><a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a></p>
@@ -21,16 +21,25 @@
 
 Ageha 是 **Lev Wu** 维护的 Python 工具包，目前正在开发中。
 
+提供统一的 OpenAI 兼容文本模型客户端，以及支持 MiniMax、豆包、BreezeBlue 和 Fish Audio 的 TTS 接口。
+
+## 文本交流
+
+任意兼容 OpenAI API 的平台都可以用同一个客户端，通过 `base_url` 和 `model` 配置：
+
+~~~python
+from ageha import Chat
+
+chat = Chat(api_key="...", base_url="https://api.deepseek.com/v1", model="deepseek-chat")
+reply = chat.complete([{"role": "user", "content": "你好"}])
+~~~
+
+也可以用 `chat.complete_agent(...)` 启用函数工具调用和流式增量回调。
+
 ## 安装使用
 
 ~~~bash
 pip install ageha
-~~~
-
-~~~python
-from ageha import greet
-
-print(greet("Lev Wu"))  # Hello, Lev Wu!
 ~~~
 
 ## 本地开发

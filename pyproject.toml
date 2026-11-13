@@ -1,18 +1,21 @@
 [project]
 name = "ageha"
 version = "0.0.1"
-description = "A Python toolkit."
+description = "A Python toolkit with shared chat and multi-provider TTS interfaces."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{name = "Lev Wu"}]
-dependencies = []
+dependencies = ["requests>=2.31"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
     "Typing :: Typed",
 ]
+
+[project.optional-dependencies]
+breeze = ["breeze-blue>=0.21.1"]
 
 [project.urls]
 Homepage = "https://github.com/IceyWu/ageha-python"

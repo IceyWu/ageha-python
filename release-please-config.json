@@ -6,7 +6,7 @@
       "package-name": "ageha",
       "include-component-in-tag": false,
       "bump-minor-pre-major": true,
-      "bump-patch-for-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": false,
       "extra-files": [
         "src/ageha/__init__.py"
       ]

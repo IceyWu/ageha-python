@@ -1,6 +1,6 @@
 # Ageha
 
-**A Python SDK for unified model integrations.**  
+**A Python SDK for unified model integrations.**
 Created and maintained by **Lev Wu**.
 
 Ageha is being developed as an independent foundation for connecting applications
